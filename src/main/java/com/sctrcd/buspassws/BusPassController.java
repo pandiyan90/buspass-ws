@@ -1,41 +1,30 @@
 package com.sctrcd.buspassws;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sctrcd.buspassws.facts.BusPass;
 import com.sctrcd.buspassws.facts.Person;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
+@Slf4j
 public class BusPassController {
 
-    private static Logger log = LoggerFactory.getLogger(BusPassController.class);
-
-    private final BusPassService busPassService;
-
     @Autowired
-    public BusPassController(BusPassService busPassService) {
-        this.busPassService = busPassService;
-    }
+    private BusPassService busPassService;
 
-    @RequestMapping(value = "/buspass", 
-            method = RequestMethod.GET, produces = "application/json")
+    @GetMapping("/buspass")
     public BusPass getQuestions(
             @RequestParam(required = true) String name,
             @RequestParam(required = true) int age) {
 
         Person person = new Person(name, age);
-
-        log.debug("Bus pass request received for: " + person);
-        
-        BusPass busPass = busPassService.getBusPass(person);
-
-        return busPass;
+        log.info("Bus pass request received for: " + person);
+        return busPassService.getBusPass(person);
     }
 
 }
